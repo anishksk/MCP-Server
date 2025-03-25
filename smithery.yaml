@@ -1,0 +1,51 @@
+version: '1.0'
+name: skysql-mcp-server
+description: SkySQL MCP Server for managing serverless databases
+
+build:
+  dockerfile: Dockerfile
+  context: .
+
+env:
+  - SKYSQL_API_KEY
+  - SKYSQL_HOST
+  - SKYSQL_USER
+  - SKYSQL_PASSWORD
+  - SKYSQL_DATABASE
+
+ports:
+  - 3000:3000
+
+mcp:
+  protocol: json-rpc
+  endpoints:
+    - /mcp
+  tools:
+    - name: createDatabase
+      description: Create a new serverless database
+      parameters:
+        - name: name
+          type: string
+          required: true
+        - name: region
+          type: string
+          required: false
+          default: us-east-2
+    
+    - name: deleteDatabase
+      description: Delete a serverless database
+      parameters:
+        - name: databaseId
+          type: string
+          required: true
+    
+    - name: getDatabaseStatus
+      description: Get the status of a database
+      parameters:
+        - name: databaseId
+          type: string
+          required: true
+    
+    - name: listDatabases
+      description: List all databases
+      parameters: [] 

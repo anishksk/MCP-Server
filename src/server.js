@@ -18,7 +18,90 @@ const dbConfig = {
 // Create database connection pool
 const pool = mysql.createPool(dbConfig);
 
-// API Endpoints
+// MCP JSON-RPC Endpoint
+app.post('/mcp', async (req, res) => {
+  const { method, params, id } = req.body;
+
+  try {
+    let result;
+    switch (method) {
+      case 'tools/list':
+        result = {
+          tools: [
+            {
+              name: 'createDatabase',
+              description: 'Create a new serverless database',
+              parameters: [
+                { name: 'name', type: 'string', required: true },
+                { name: 'region', type: 'string', required: false, default: 'us-central1' }
+              ]
+            },
+            {
+              name: 'deleteDatabase',
+              description: 'Delete a serverless database',
+              parameters: [
+                { name: 'databaseId', type: 'string', required: true }
+              ]
+            },
+            {
+              name: 'getDatabaseStatus',
+              description: 'Get the status of a database',
+              parameters: [
+                { name: 'databaseId', type: 'string', required: true }
+              ]
+            },
+            {
+              name: 'listDatabases',
+              description: 'List all databases',
+              parameters: []
+            }
+          ]
+        };
+        break;
+
+      case 'initialize':
+        result = { initialized: true };
+        break;
+
+      case 'createDatabase':
+        result = await skysql.createServerlessDatabase(params.name, params.region);
+        break;
+
+      case 'deleteDatabase':
+        result = await skysql.deleteServerlessDatabase(params.databaseId);
+        break;
+
+      case 'getDatabaseStatus':
+        result = await skysql.getDatabaseStatus(params.databaseId);
+        break;
+
+      case 'listDatabases':
+        result = await skysql.listDatabases();
+        break;
+
+      default:
+        throw new Error(`Method ${method} not found`);
+    }
+
+    res.json({
+      jsonrpc: '2.0',
+      result,
+      id
+    });
+  } catch (error) {
+    console.error('MCP Error:', error);
+    res.status(200).json({
+      jsonrpc: '2.0',
+      error: {
+        code: -32000,
+        message: error.message
+      },
+      id
+    });
+  }
+});
+
+// Existing REST API endpoints
 app.post('/api/query', async (req, res) => {
   try {
     const { sql } = req.body;
