@@ -31,3 +31,19 @@ endpoints:
   - path: /health
     type: http
     methods: [GET]
+tools:
+  - name: Run SQL Query
+    description: Executes a query on a SkySQL database
+    endpoint: /mcp
+    method: POST
+    input:
+      - name: database_id
+        type: string
+        description: "The ID of the target database"
+        required: true
+      - name: query
+        type: string
+        description: "The SQL query to run"
+        required: true
+    output:
+      type: object
