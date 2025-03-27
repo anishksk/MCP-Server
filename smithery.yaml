@@ -15,7 +15,7 @@ start:
   port: 3000
 
 environment:
-  - name: skysql.1zzz.t37wobn2.Q0yiq4A1lxpTwqI0DBGzcnFSLOgioLQcDifg.6862e7b4
+  - name: SKYSQL_API_KEY
     required: true
 
 endpoints:
