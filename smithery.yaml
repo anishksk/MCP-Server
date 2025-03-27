@@ -1,14 +1,8 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
 name: skysql-mcp-server
 version: '1.0'
 description: SkySQL MCP Server for managing serverless databases
-
-config:
-  type: object
-  properties:
-    SKYSQL_API_KEY:
-      type: string
-      description: "SkySQL API Key for authentication"
-  required: ["SKYSQL_API_KEY"]
 
 build:
   dockerfile: Dockerfile
@@ -16,7 +10,24 @@ build:
 
 startCommand:
   type: stdio
-  command: npm start
+  configSchema:
+    type: object
+    required:
+      - SKYSQL_API_KEY
+    properties:
+      SKYSQL_API_KEY:
+        type: string
+        description: SkySQL API Key for authentication
+  commandFunction: |
+    function(config) {
+      return {
+        command: "npm",
+        args: ["start"],
+        env: {
+          SKYSQL_API_KEY: config.SKYSQL_API_KEY
+        }
+      };
+    }
 
 endpoints:
   - path: /mcp
@@ -31,6 +42,7 @@ endpoints:
   - path: /health
     type: http
     methods: [GET]
+
 tools:
   - name: Run SQL Query
     description: Executes a query on a SkySQL database
