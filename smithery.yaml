@@ -2,21 +2,29 @@ name: skysql-mcp-server
 version: '1.0'
 description: SkySQL MCP Server for managing serverless databases
 
-runtime:
-  type: node
-  version: 18
-
 build:
-  commands:
-    - npm install
+  dockerfile: Dockerfile
+  context: .
 
-start:
-  command: npm start
-  port: 3000
-
-environment:
-  - name: SKYSQL_API_KEY
-    required: true
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      SKYSQL_API_KEY:
+        type: string
+        description: "SkySQL API Key for authentication"
+    required: ["SKYSQL_API_KEY"]
+  commandFunction: |
+    function(config) {
+      return {
+        command: "npm",
+        args: ["start"],
+        env: {
+          SKYSQL_API_KEY: config.SKYSQL_API_KEY
+        }
+      };
+    }
 
 endpoints:
   - path: /mcp
