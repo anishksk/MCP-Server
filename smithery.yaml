@@ -30,4 +30,4 @@ endpoints:
     methods: [GET, DELETE]
   - path: /health
     type: http
-    methods: [GET] 
+    methods: [GET]
