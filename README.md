@@ -1,5 +1,7 @@
 # SkySQL MCP Integration
 
+[![smithery badge](https://smithery.ai/badge/@anishksk/mcp-server)](https://smithery.ai/server/@anishksk/mcp-server)
+
 This project provides a REST API interface for managing SkySQL databases, with integration capabilities for GitHub and Smithery.ai.
 
 ## Features
