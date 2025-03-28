@@ -18,9 +18,9 @@ startCommand:
         type: string
         title: SkySQL API Key
         description: Your SkySQL API key for accessing SkySQL services
-    required: ["skysqlApiKey"]
-  commandFunction: |-
-    (config) => {
+    required: [skysqlApiKey]
+  commandFunction: |
+    function(config) {
       return {
         command: "npm",
         args: ["start"],
@@ -30,7 +30,7 @@ startCommand:
           MCP_DEBUG: "False",
           SKYSQL_API_KEY: config.skysqlApiKey
         }
-      }
+      };
     }
 
 endpoints:
