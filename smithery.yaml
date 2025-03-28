@@ -12,24 +12,26 @@ startCommand:
   type: stdio
   configSchema:
     # JSON Schema defining the configuration options for the MCP.
-    type: "object"
+    type: object
     properties:
       skysqlApiKey:
-        type: "string"
-        title: "SkySQL API Key"
-        description: "Your SkySQL API key for accessing SkySQL services"
+        type: string
+        title: SkySQL API Key
+        description: Your SkySQL API key for accessing SkySQL services
     required: ["skysqlApiKey"]
   commandFunction: |-
-    (config) => ({
-      "command": "npm",
-      "args": ["start"],
-      "env": {
-        "MCP_HOST": "0.0.0.0",
-        "MCP_PORT": "3000",
-        "MCP_DEBUG": "False",
-        "SKYSQL_API_KEY": config.skysqlApiKey
+    (config) => {
+      return {
+        command: "npm",
+        args: ["start"],
+        env: {
+          MCP_HOST: "0.0.0.0",
+          MCP_PORT: "3000",
+          MCP_DEBUG: "False",
+          SKYSQL_API_KEY: config.skysqlApiKey
+        }
       }
-    })
+    }
 
 endpoints:
   - path: /mcp
