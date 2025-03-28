@@ -1,58 +1,30 @@
 # Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
 
-name: skysql-mcp-server
-version: '1.0'
-description: SkySQL MCP Server for managing serverless databases
-
-config:
-  type: object
-  properties:
-    skysqlApiKey:
-      type: string
-      title: SkySQL API Key
-      description: Your SkySQL API key for accessing SkySQL services
-  required: [skysqlApiKey]
-
 build:
   dockerfile: Dockerfile
-  context: .
-
 startCommand:
   type: stdio
-  command: npm start
-  env:
-    SKYSQL_API_KEY: ${config.skysqlApiKey}
-    MCP_HOST: "0.0.0.0"
-    MCP_PORT: "3000"
-    MCP_DEBUG: "False"
-
-endpoints:
-  - path: /mcp
-    type: mcp
-    methods: [POST]
-  - path: /api/databases
-    type: http
-    methods: [GET, POST]
-  - path: /api/databases/:id
-    type: http
-    methods: [GET, DELETE]
-  - path: /health
-    type: http
-    methods: [GET]
-
-tools:
-  - name: Run SQL Query
-    description: Executes a query on a SkySQL database
-    endpoint: /mcp
-    method: POST
-    input:
-      - name: database_id
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - skysqlApiKey
+    properties:
+      skysqlApiKey:
         type: string
-        description: "The ID of the target database"
-        required: true
-      - name: query
-        type: string
-        description: "The SQL query to run"
-        required: true
-    output:
-      type: object
+        description: Your SkySQL API key for accessing SkySQL services
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => {
+      return {
+        command: "npm",
+        args: ["start"],
+        env: {
+          MCP_HOST: "0.0.0.0",
+          MCP_PORT: "3000",
+          MCP_DEBUG: "False",
+          SKYSQL_API_KEY: config.skysqlApiKey
+        }
+      }
+    }
