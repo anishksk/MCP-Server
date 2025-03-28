@@ -11,13 +11,15 @@ build:
 startCommand:
   type: stdio
   configSchema:
-    type: object
-    required:
-      - SKYSQL_API_KEY
+    # JSON Schema defining the configuration options for the MCP.
+    type: "object"
     properties:
-      SKYSQL_API_KEY:
-        type: string
-        description: SkySQL API Key for authentication
+      skysqlApiKey:
+        type: "string"
+        title: "SkySQL API Key"
+        description: "Your SkySQL API key for accessing SkySQL services"
+    required: ["skysqlApiKey"]
+  commandFunction:
   commandFunction: |
     function(config) {
       return {
